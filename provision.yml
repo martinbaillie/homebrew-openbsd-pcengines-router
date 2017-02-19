@@ -1,0 +1,155 @@
+---
+- hosts: all
+  become: true
+  become_method: doas
+  vars:
+    ansible_python_interpreter: /usr/local/bin/python2.7
+
+  tasks:
+    - name: load settings
+      include_vars: "settings.yml"
+
+    - name: packages
+      environment:
+        PKG_PATH: "{{openbsd_mirror}}/{{openbsd_mirror_directory}}"
+      openbsd_pkg: name="{{item}}" state='present'
+      with_items: "{{packages}}"
+
+    - name: update root user full name
+      command: usermod -c "{{full_name}}" root
+
+    - name: user shell and groups
+      user: name='{{user}}' state='present' groups='wheel' shell='/usr/local/bin/zsh'
+
+    - name: clone dotfiles
+      git:
+        repo: "{{dotfiles_repo}}"
+        dest: "/home/{{user}}/.dotfiles"
+        accept_hostkey: yes
+        recursive: yes
+        depth: 1
+      become_user: "{{user}}"
+
+    - name: link dotfiles into home folder
+      file:
+        src:  "{{item.src}}"
+        dest: "{{item.dst}}"
+        state: link
+      with_items: "{{dotfiles_links}}"
+      become_user: "{{user}}"
+
+    - name: korn shell vi mode
+      lineinfile: dest='/etc/ksh.kshrc' regexp='^(.*)emacs(.*)$' line='\1vi\2' backrefs=yes
+
+    - name: mail secrets file
+      lineinfile: dest='/etc/mail/secrets' line='googlemail {{gmail_user}}:{{gmail_pass}}' create='yes' owner='root' group='_smtpd' mode='0640'
+
+    - name: mail secrets db
+      command: makemap /etc/mail/secrets
+
+    - name: relay all mail through google mail (opensmtpd)
+      blockinfile:
+        dest: /etc/mail/smtpd.conf
+        block: |
+          table secrets db:/etc/mail/secrets.db
+          accept for any relay via tls+auth://googlemail@smtp.googlemail.com:587 auth <secrets>
+
+    - name: forward root mail to personal account
+      lineinfile: dest='/etc/mail/aliases' regexp='^(#\ +)?root:' line='root{{\':\'}} {{email}}'
+
+    - name: update aliases
+      command: newaliases
+
+    - name: set noatime and softdep on root partition
+      lineinfile: dest='/etc/fstab' backrefs='yes' regexp='^([0-9a-f]{16}\.[a-z]{1})\ / ' line='\1 / ffs rw,noatime,softdep 1 1'
+
+    - name: dns resolvers
+      template: src='{{dir_templates}}/resolv.conf.j2' dest='/etc/resolv.conf' owner='root' group='wheel' mode='0644'
+
+    - name: recursive caching dns server (unbound)
+      template:
+        src: '{{dir_templates}}/unbound.conf.j2'
+        dest: '/var/unbound/etc/unbound.conf'
+        owner: 'root'
+        group: 'wheel'
+        mode: '0644'
+        validate: 'env ANSIBLE_IGNORE=%s unbound-checkconf'
+
+    - name: link unbound conf
+      file: src='/var/unbound/etc/unbound.conf' dest='/etc/unbound.conf' owner='root' group='wheel' state='link'
+
+    - name: adservers mkdb script
+      copy: src='{{dir_files}}/adservers_mkdb.sh' dest='/usr/local/bin/adservers_mkdb' owner='root' group='wheel' mode='a+x'
+
+    - name: cron to update adservers db
+      cron:
+        name: 'update adservers db'
+        special_time: monthly
+        job: '/usr/local/bin/adservers_mkdb'
+
+    - name: ntp servers
+      template: src='{{dir_templates}}/ntpd.conf.j2' dest='/etc/ntpd.conf' owner='root' group='wheel' mode='0644'
+
+    - name: network bridge
+      copy: src='{{dir_files}}/hostname.bridge0' dest='/etc/hostname.bridge0' owner='root' group='wheel' mode='0640'
+
+    - name: virtual ethernet interface
+      template: src='{{dir_templates}}/hostname.vether0.j2' dest='/etc/hostname.vether0' owner='root' group='wheel' mode='0640'
+
+    - name: physical ethernet interfaces
+      copy: src='{{dir_files}}/hostname.emx' dest="/etc/hostname.{{item}}" owner="root" group="wheel" mode="0640"
+      with_items:
+        - 'em0'
+        - 'em1'
+        - 'em2'
+
+    - name: ppp over ethernet
+      template: src='{{dir_templates}}/hostname.pppoe0.j2' dest='/etc/hostname.pppoe0' owner='root' group='wheel' mode='0640'
+
+    - name: wireless access point
+      template: src='{{dir_templates}}/hostname.athn0.j2' dest='/etc/hostname.athn0' owner='root' group='wheel' mode='0640'
+
+    - name: dhcpd
+      template: src='{{dir_templates}}/dhcpd.conf.j2' dest='/etc/dhcpd.conf' owner='root' group='wheel' mode='0640'
+
+    - name: sensorsd
+      copy: src='{{dir_files}}/sensorsd.conf' dest='/etc/sensorsd.conf' owner='root' group='wheel' mode='0600'
+
+    - name: bogon mkdb script
+      copy: src='{{dir_files}}/bogons_mkdb.sh' dest='/usr/local/bin/bogons_mkdb' owner='root' group='wheel' mode='a+x'
+
+    - name: cron to update bogons db
+      cron:
+        name: 'update bogons db'
+        special_time: weekly
+        job: '/usr/local/bin/bogons_mkdb'
+
+    - name: packet filter (pf)
+      template: src='{{dir_templates}}/pf.conf.j2' dest='/etc/pf.conf' owner='root' group='wheel' mode='0600' validate='pfctl -nf %s'
+
+    - name: syslog conf for pf
+      lineinfile: dest='/etc/syslog.conf' line='local0.info     /var/log/pflog.txt'
+
+    - name: pf log rotator
+      copy: src='{{dir_files}}/pf_log_rotate.sh' dest='/usr/local/bin/pf_log_rotate' owner='root' group='wheel' mode='a+x'
+
+    - name: cron to rotate pf logs
+      cron:
+        name: 'rotate packet filter logs'
+        special_time: hourly
+        job: '/usr/local/bin/pf_log_rotate'
+
+    - name: pf log file
+      file: path='/var/log/pflog.txt' owner='root' group='wheel' mode='0600' state='touch'
+
+    - name: kernel configuration (sysctl)
+      copy: src='{{dir_files}}/sysctl.conf' dest='/etc/sysctl.conf' owner='root' group='wheel' mode='0600'
+
+    - name: enable services
+      lineinfile: dest='/etc/rc.conf.local' regexp='^{{item.name}}_flags=' line='{{item.name}}_flags=\"{{item.flags}}\"' create='yes'
+      with_items:
+        - { name: 'unbound',  flags: '' }
+        - { name: 'ntpd',   flags: '-s' }
+        - { name: 'dhcpd',  flags: 'vether0' }
+        - { name: 'sensorsd',  flags: '' }
+        - { name: 'sndiod',  flags: 'NO' }

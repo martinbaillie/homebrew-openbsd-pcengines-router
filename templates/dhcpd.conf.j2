@@ -1,0 +1,18 @@
+option  domain-name "{{ network_domain }}";
+option  domain-name-servers {{ network_address }};
+
+option  ntp-servers {{ network_address }};
+
+subnet {{ network_subnet }}.0 netmask 255.255.255.0 {
+  option routers {{ network_address }};
+  range {{ network_subnet }}.10 {{ network_subnet }}.127;
+}
+
+{% for client in network_fixed_clients %}
+host {{ client }} {
+  hardware ethernet {{ network_fixed_clients[client].physical }};
+  fixed-address {{ network_fixed_clients[client].logical }};
+  option host-name "{{ client }}";
+}
+
+{% endfor %}

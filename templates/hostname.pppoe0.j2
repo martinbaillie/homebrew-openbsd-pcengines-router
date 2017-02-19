@@ -1,0 +1,5 @@
+inet 0.0.0.0 255.255.255.255 NONE mtu 1492 \
+       pppoedev em0 authproto pap \
+       authname '{{ pppoe_authname }}' authkey '{{ pppoe_authkey }}' up
+dest 0.0.0.1
+!/sbin/route add default -ifp pppoe0 0.0.0.1

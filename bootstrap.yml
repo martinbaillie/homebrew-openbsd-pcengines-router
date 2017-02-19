@@ -1,0 +1,35 @@
+---
+- hosts: all
+  become: true
+  become_method: su
+  vars:
+    ansible_python_interpreter: /usr/local/bin/python2.7
+
+  tasks:
+    - name: load settings
+      include_vars: "settings.yml"
+
+    - name: add user public key
+      authorized_key: user='{{user}}' key="{{item}}"
+      register: public_key_added
+      with_file:
+        - "~/.ssh/id_ed25519.pub"
+
+    - name: configure doas
+      copy: src='{{dir_files}}/doas.conf' dest='/etc/doas.conf' owner='root' group='wheel' mode='0600'
+
+    - name: ssh standard listening port
+      lineinfile: dest=/etc/ssh/sshd_config regexp='^#?Port' line='Port 22'
+
+    - name: ssh externally facing listening port
+      lineinfile: dest=/etc/ssh/sshd_config insertafter='^Port 22' line='Port {{ ssh_external_port }}'
+
+    - name: disable ssh password logins
+      lineinfile: dest=/etc/ssh/sshd_config regexp="^#?PasswordAuthentication" line="PasswordAuthentication no"
+      when: public_key_added|success and not public_key_added|skipped
+      notify:
+        - restart sshd
+
+  handlers:
+    - name: restart sshd
+      service: name=sshd state=restarted

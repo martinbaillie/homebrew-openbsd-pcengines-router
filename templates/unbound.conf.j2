@@ -1,0 +1,36 @@
+server:
+  interface: 127.0.0.1
+  interface: {{ network_address }}
+  do-ip6: no
+
+  access-control: 0.0.0.0/0 refuse
+  access-control: 127.0.0.0/8 allow
+  access-control: 192.168.0.0/16 allow
+  access-control: ::0/0 refuse
+  verbosity: 1
+
+  hide-identity: yes
+  hide-version: yes
+
+  local-zone: "{{ network_domain }}." transparent
+
+  local-data: "{{ hostname }}.{{ network_domain }}. IN A {{ network_address }}"
+  local-data-ptr: "{{ network_address }} {{ hostname }}.{{ network_domain }}"
+
+  {% for client in network_fixed_clients %}
+  local-data: "{{ client }}.{{ network_domain }}. IN A {{ network_fixed_clients[client].logical }}"
+  local-data-ptr: "{{ network_fixed_clients[client].logical }} {{ client }}.{{ network_domain }}"
+
+  {% endfor %}
+  include: /etc/adservers.db
+
+forward-zone:
+  name: "."
+  {% for nameserver in nameservers %}
+  forward-addr: {{ nameserver }}
+  {% endfor %}
+
+remote-control:
+  control-enable: yes
+  control-use-cert: no
+  control-interface: /var/run/unbound.sock

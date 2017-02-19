@@ -1,0 +1,9 @@
+add em1
+add em2
+add athn0
+add vether0
+blocknonip em1
+blocknonip em2
+blocknonip athn0
+blocknonip vether0
+up

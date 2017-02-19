@@ -1,0 +1,69 @@
+# internal interfaces
+int_if="{ vether0 athn0 em1 em2 }"
+# egress keyword used to represent the interface with the default route
+
+# table of bogus private addresses. bogons, martians..
+# db updated weekly by crond
+table <bogons> persist file "/etc/bogons.db"
+
+# silently drop rejected packets
+set block-policy drop
+
+# packet and byte statistics
+set loginterface egress
+
+# don't filter on the loopback interface
+set skip on lo0
+
+# scrub incoming packets
+match in all scrub (no-df random-id)
+
+# MSS clamping for pppoe
+match on egress scrub (max-mss 1452)
+
+# network address translation
+match out on egress inet from !(egress:network) to any nat-to (egress:0)
+
+# quickly drop packets from spoofed or forged ip addresses
+antispoof quick for (egress)
+
+# don't care about ipv6 yet
+block return out quick inet6 all
+block in quick inet6 all
+
+# prohibit internet access for device in the bogons table
+block in quick on egress from <bogons> to any
+block return out quick on egress from any to <bogons>
+
+# default deny all
+block all
+
+# but permit ipv4 traffic from gateway or LAN
+pass out quick inet
+pass in on $int_if inet
+
+# prioritise low delay ToS packets
+match out on egress set prio (3, 4)
+
+# prioritise interactive ssh
+match out on egress proto tcp to port ssh set prio (3, 5)
+
+# prioritise icmp
+match out on egress proto icmp set prio (6, 7)
+
+# prioritise dns
+match out on egress proto { tcp, udp } to port domain set prio (6, 7)
+
+# allow ssh connections on chosen external port
+pass in on egress inet proto tcp from any to (egress) port {{ ssh_external_port }}
+
+# SSH brute force blackhole table
+table <ssh-brute-force> persist
+
+# block anything in the brute force table
+block quick from <ssh-brute-force>
+
+# append client machine to the table if appears to be brute forcing
+pass in on egress proto tcp to (egress) port ssh modulate state \
+  (max-src-conn 10, max-src-conn-rate 5/5, \
+   overload <ssh-brute-force> flush global)

@@ -1,0 +1,58 @@
+# EXAMPLE settings.yml to feed the Ansible scripting
+user:
+full_name:
+email:
+
+gmail_user:
+gmail_pass:
+
+wireless_chan:
+wireless_ssid:
+wireless_key:
+
+pppoe_authname:
+pppoe_authkey:
+
+hostname:
+
+nameservers:
+  - 127.0.0.1
+  - 8.8.8.8
+  - 8.8.4.4
+
+network_address: 192.168.1.1
+network_subnet: 192.168.1
+network_mask: 255.255.255.0
+network_broadcast: 192.168.1.255
+network_domain: a.domain
+network_fixed_clients:
+  a-webserver:
+    logical: 192.168.1.2
+    physical: 25:5B:BB:06:F9:84
+
+  a-laptop:
+    logical: 192.168.1.3
+    physical: 24:55:b9:06:f9:05
+
+ntp_pool: au.pool.ntp.org
+
+openbsd_mirror: https://ftp.openbsd.org
+openbsd_mirror_directory: pub/OpenBSD/snapshots/packages/amd64
+
+dir_files: files
+dir_templates: templates
+
+ssh_external_port: 443
+
+dotfiles_repo: git@github.com:someone/dotfiles.git
+dotfiles_links:
+  - { src: '/home/user/.dotfiles/zsh', dst: '/home/user/.zsh' }
+  - { src: '/home/user/.dotfiles/vim', dst: '/home/user/.vim' }
+  - { src: '/home/user/.dotfiles/tmux.conf', dst: '/home/user/.tmux.conf' }
+
+packages:
+  - 'curl'
+  - 'zsh'
+  - 'git'
+  - 'pftop'
+  - 'iperf'
