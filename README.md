@@ -52,12 +52,14 @@ Total (incl. shipping to Australia): **$183.20 USD**
 > NOTE: Don't forget to remove the DB9 bolts when slotting in the enclosure.
 3. Attach the SSD (be sure to identify the mSATA from the mPCI slots) and any other mPCIs/SD cards.
 4. Attach the wireless radio card.
+
 > NOTE: Wireless radio cards are ESD sensitive, especially the RF switch and the power amplifier. To avoid damage by electrostatic discharge, the following installation procedure is recommended from PCEngines:
 >
 > 1. Touch your hands and the bag containing the radio card to a ground point on the router board (for example one of the mounting holes). This will equalize the potential of radio card and router board.
 > 2. Install the radio card in the miniPCI express socket.
 > 3. Install the pigtail cable in the cut-out of the enclosure. This will ground the pigtail to the enclosure.
 > 4. Touch the I-PEX connector of the pigtail to the mounting hole (discharge), then plug onto the radio card (this is where the pre-requisite patience comes in. I found this very finicky and spent perhaps 15 mins just getting those bastards in!)
+
 5. Attach the antennae, making sure the washer bolt is tight.
 6. Finish screwing the enclosure and plug in the DB9 cable.
 8. Plug the DC cable in first before power outlet to avoid arcing.
