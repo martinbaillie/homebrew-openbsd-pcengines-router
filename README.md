@@ -49,16 +49,18 @@ Total (incl. shipping to Australia): **$183.20 USD**
 
 1. Install heat spreader and make sure it's pressed against the enclosure.
 2. Attach bottom of enclosure, screw back in DB2 bolts and enclosure bolts.
-> NOTE: Don't forget to remove the DB9 bolts when slotting in the enclosure.
+
+    > NOTE: Don't forget to remove the DB9 bolts when slotting in the enclosure.
+
 3. Attach the SSD (be sure to identify the mSATA from the mPCI slots) and any other mPCIs/SD cards.
 4. Attach the wireless radio card.
 
-> NOTE: Wireless radio cards are ESD sensitive, especially the RF switch and the power amplifier. To avoid damage by electrostatic discharge, the following installation procedure is recommended from PCEngines:
->
-> 1. Touch your hands and the bag containing the radio card to a ground point on the router board (for example one of the mounting holes). This will equalize the potential of radio card and router board.
-> 2. Install the radio card in the miniPCI express socket.
-> 3. Install the pigtail cable in the cut-out of the enclosure. This will ground the pigtail to the enclosure.
-> 4. Touch the I-PEX connector of the pigtail to the mounting hole (discharge), then plug onto the radio card (this is where the pre-requisite patience comes in. I found this very finicky and spent perhaps 15 mins just getting those bastards in!)
+    > NOTE: Wireless radio cards are ESD sensitive, especially the RF switch and the power amplifier. To avoid damage by electrostatic discharge, the following installation procedure is recommended from PCEngines:
+    >
+    > 1. Touch your hands and the bag containing the radio card to a ground point on the router board (for example one of the mounting holes). This will equalize the potential of radio card and router board.
+    > 2. Install the radio card in the miniPCI express socket.
+    > 3. Install the pigtail cable in the cut-out of the enclosure. This will ground the pigtail to the enclosure.
+    > 4. Touch the I-PEX connector of the pigtail to the mounting hole (discharge), then plug onto the radio card (this is where the pre-requisite patience comes in. I found this very finicky and spent perhaps 15 mins just getting those bastards in!)
 
 5. Attach the antennae, making sure the washer bolt is tight.
 6. Finish screwing the enclosure and plug in the DB9 cable.
@@ -91,14 +93,16 @@ First and foremost, you should probably run a Memtest.
 
 1. Power cycle the router.
 2. Quickly fire in an F10 (remember fn key if Macbook) before the boot sequence gets too far.
-> NOTE: This is a good time to make sure your SATA/PCI slots are seated and registered. They show up in the F10 menu.
+
+    > NOTE: This is a good time to make sure your SATA/PCI slots are seated and registered. They show up in the F10 menu.
+
 3. Select: Payload [memtest]
 
 ![Memtest](./memtest.png "Memtest")
 
 4. ~2 hours later I had completed one pass which was good enough for me.
 
-> NOTE: The apu2c4's AMD GX-412TC has a max temp rating of 90C. Mine hit a max of 69C during this test in a 30C ambient temperature (Australian summer)
+    > NOTE: The apu2c4's AMD GX-412TC has a max temp rating of 90C. Mine hit a max of 69C during this test in a 30C ambient temperature (Australian summer)
 
 ## BIOS Update
 
@@ -116,33 +120,35 @@ This step involves creating a bootable USB containing [PCEngine's TinyCoreLinux]
 | PCEngines apu2 ROM | http://www.pcengines.ch/file/apu2_160311.zip | 780a8ffaa034e013fef7126f3f986646
 
 1. Grab and verify the distributions:
-```bash
-# Download
-curl -O http://pcengines.ch/file/apu2-tinycore6.4.img.gz
-curl -O http://www.pcengines.ch/file/apu2_160311.zip
 
-# Uncompress
-gunzip apu2-tinycore6.4.img.gz
-unzip apu2_160311.zip
+    ```bash
+    # Download
+    curl -O http://pcengines.ch/file/apu2-tinycore6.4.img.gz
+    curl -O http://www.pcengines.ch/file/apu2_160311.zip
 
-# Verify
-md5 apu2-tinycore6.4.img # 48b8e0f21792648889aa99bf8156fed7
-md5 apu2_160311.rom # 780a8ffaa034e013fef7126f3f986646
-```
+    # Uncompress
+    gunzip apu2-tinycore6.4.img.gz
+    unzip apu2_160311.zip
+
+    # Verify
+    md5 apu2-tinycore6.4.img # 48b8e0f21792648889aa99bf8156fed7
+    md5 apu2_160311.rom # 780a8ffaa034e013fef7126f3f986646
+    ```
+
 2. Add the ROM to the disk image. The easiest way I could find was simply to mount the IMG and drag the ROM into it, both using Finder.
 3. Unmount both the IMG file and the USB
 4. Write the IMG to the *raw* USB device. In my case this was `disk2`. Double check with `diskutil list`.
-```bash
-sudo dd if=apu2-tinycore6.4.img of=/dev/rdisk2 bs=1m
-```
+    ```bash
+    sudo dd if=apu2-tinycore6.4.img of=/dev/rdisk2 bs=1m
+    ```
 
 #### Flash the BIOS
 1. With the USB in a slot, power cycle the router.
 2. Either fire in an F10 again, or wait and the boot order should kick in and launch TinyCore Linux from the USB.
 3. This should land you in a rootshell with `/media/SYSLINUX` the mounted USB. Proceed to flash the ROM:
-```bash
-flashrom -p internal -w /media/SYSLINUX/apu2_160311.rom
-```
+    ```bash
+    flashrom -p internal -w /media/SYSLINUX/apu2_160311.rom
+    ```
 4. Reboot after you see the final `Verifying flash... VERIFIED`.
 
 ## OpenBSD
@@ -161,41 +167,45 @@ Anyway, choose `-STABLE` or `-CURRENT` (or perhaps 6.1+) based on your WiFi acce
 
 #### Install
 1. You will want to grab the latest OpenBSD filesystem image and verify its SHA256 hash:
-> NOTE: Use a [mirror](https://www.openbsd.org/ftp.html) local to you.
-```bash
-# STABLE
-curl -O http://ftp.openbsd.org/pub/OpenBSD/6.0/amd64/install60.fs
-shasum -a 256 install60.fs # Matches the install60.fs line item @ https://ftp.openbsd.org/pub/OpenBSD/6.0/amd64/SHA256
+    > NOTE: Use a [mirror](https://www.openbsd.org/ftp.html) local to you.
 
-# CURRENT
-curl -O https://ftp.openbsd.org/pub/OpenBSD/snapshots/amd64/install60.fs
-shasum -a 256 install60.fs # Matches the install60.fs line item @ https://ftp.openbsd.org/pub/OpenBSD/snapshots/amd64/SHA256
-```
+    ```bash
+    # STABLE
+    curl -O http://ftp.openbsd.org/pub/OpenBSD/6.0/amd64/install60.fs
+    shasum -a 256 install60.fs # Matches the install60.fs line item @ https://ftp.openbsd.org/pub/OpenBSD/6.0/amd64/SHA256
+
+    # CURRENT
+    curl -O https://ftp.openbsd.org/pub/OpenBSD/snapshots/amd64/install60.fs
+    shasum -a 256 install60.fs # Matches the install60.fs line item @ https://ftp.openbsd.org/pub/OpenBSD/snapshots/amd64/SHA256
+    ```
+
 2. Stick the flash drive back into the Macbook, unmount it and write the OpenBSD filesystem to the drive:
-```bash
-# Assuming `disk2` as before (again, confirm with `diskutil list`)
-diskutil unmountDisk /dev/disk2
-# Write install60.fs to the flash drive
-sudo dd if=install60.fs of=/dev/rdisk2 bs=1m
-# macOS mounted it again for me after this, so...
-diskutil unmountDisk /dev/disk2
-```
+    ```bash
+    # Assuming `disk2` as before (again, confirm with `diskutil list`)
+    diskutil unmountDisk /dev/disk2
+
+    # Write install60.fs to the flash drive
+    sudo dd if=install60.fs of=/dev/rdisk2 bs=1m
+
+    # macOS mounted it again for me after this, so...
+    diskutil unmountDisk /dev/disk2
+    ```
 3. Plug the flash drive into the router and turn it on. Assuming the boot sequence is the same as mine this will land you at the `boot>` prompt. If not, launch the USB from the BIOS menu or edit the BIOS settings and change the order so that USB slots are first up.
 4. Pay attention to the serial console [FAQ](https://www.openbsd.org/faq/faq7.html). I found I had to tell the boot process to use the serial port as a console and change the baud rate. Though I found I didn't have to persist this in [boot.conf(5)](http://man.openbsd.org/amd64/boot.conf) as the FAQ said; it seemed to get done for me.
-```bash
-boot> set tty com0
-boot> stty com0 115200
-```
+    ```bash
+    boot> set tty com0
+    boot> stty com0 115200
+    ```
 
 5. Go ahead with an OpenBSD install.
-```bash
-Welcome to the OpenBSD/amd64 6.0 installation program.
-(I)nstall, (U)pgrade, (A)utoinstall or (S)hell?
-```
+    ```bash
+    Welcome to the OpenBSD/amd64 6.0 installation program.
+    (I)nstall, (U)pgrade, (A)utoinstall or (S)hell?
+    ```
 
-> NOTE: I won't detail install steps here; the [documentation](https://www.openbsd.org/faq/faq4.html#Install) has a sterling reputation for a reason.
->
-> That said, you'll not have much need for the X11 and game install sets so you may as well de-select those.
+    > NOTE: I won't detail install steps here; the [documentation](https://www.openbsd.org/faq/faq4.html#Install) has a sterling reputation for a reason.
+    >
+    > That said, you'll not have much need for the X11 and game install sets so you may as well de-select those.
 
 ## Immutability
 
@@ -214,10 +224,12 @@ ansible -m raw -c paramiko -u "${USER}" -k \
     "PKG_PATH=https://ftp.openbsd.org/pub/OpenBSD/snapshots/packages/amd64 \
     pkg_add python-${PYTHON_VERSION}" -i "$1," "$1"
 ```
+
 Then a 1st provisioning pass enables [`doas(1)`](http://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/doas.1) and disables password auth in lieu of successfully configuring public keys:
 ```bash
 ansible-playbook bootstrap.yml -kKi "$1,"
 ```
+
 The main event provisions the rest of the configuration using key based logins and [`doas(1)`](http://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/doas.1) for superuser access:
 ```bash
 ansible-playbook provision.yml -i "$1,"
