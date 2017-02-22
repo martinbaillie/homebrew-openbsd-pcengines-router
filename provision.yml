@@ -18,28 +18,53 @@
     - name: update root user full name
       command: usermod -c "{{full_name}}" root
 
-    - name: user shell and groups
+    - name: zshell and groups ({{user}})
       user: name='{{user}}' state='present' groups='wheel' shell='/usr/local/bin/zsh'
 
-    - name: clone dotfiles
+    - name: zshell (root)
+      user: name='root' state='present' shell='/usr/local/bin/zsh'
+
+    # Doesn't appear to affect matters
+    #- name: korn shell vi mode
+      #lineinfile: dest='/etc/ksh.kshrc' regexp='^(.*)emacs(.*)$' line='\1vi\2' backrefs=yes
+
+    - name: default editor ({{user}})
+      become_user: "{{user}}"
+      blockinfile:
+        dest: "/home/{{user}}/.zshrc"
+        create: 'yes'
+        block: |
+          alias vi=vim
+          EDITOR=vi
+          VISUAL=$EDITOR
+          export EDITOR VISUAL
+
+    - name: default editor (root)
+      blockinfile:
+        dest: "/root/.zshrc"
+        create: 'yes'
+        block: |
+          alias vi=vim
+          EDITOR=vi
+          VISUAL=$EDITOR
+          export EDITOR VISUAL
+
+    - name: clone dotfiles ({{user}})
+      become_user: "{{user}}"
       git:
         repo: "{{dotfiles_repo}}"
         dest: "/home/{{user}}/.dotfiles"
         accept_hostkey: yes
         recursive: yes
         depth: 1
-      become_user: "{{user}}"
 
     - name: link dotfiles into home folder
+      become_user: "{{user}}"
       file:
         src:  "{{item.src}}"
         dest: "{{item.dst}}"
         state: link
       with_items: "{{dotfiles_links}}"
-      become_user: "{{user}}"
-
-    - name: korn shell vi mode
-      lineinfile: dest='/etc/ksh.kshrc' regexp='^(.*)emacs(.*)$' line='\1vi\2' backrefs=yes
 
     - name: mail secrets file
       lineinfile: dest='/etc/mail/secrets' line='googlemail {{gmail_user}}:{{gmail_pass}}' create='yes' owner='root' group='_smtpd' mode='0640'
