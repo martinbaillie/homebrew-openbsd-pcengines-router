@@ -100,8 +100,8 @@
         mode: '0644'
         validate: 'env ANSIBLE_IGNORE=%s unbound-checkconf'
 
-    - name: link unbound conf
-      file: src='/var/unbound/etc/unbound.conf' dest='/etc/unbound.conf' owner='root' group='wheel' state='link'
+    - name: copy unbound conf
+      copy: remote_src=true src=/var/unbound/etc/unbound.conf dest=/etc/unbound.conf
 
     - name: adservers mkdb script
       copy: src='{{dir_files}}/adservers_mkdb.sh' dest='/usr/local/bin/adservers_mkdb' owner='root' group='wheel' mode='a+x'

@@ -64,6 +64,6 @@ table <ssh-brute-force> persist
 block quick from <ssh-brute-force>
 
 # append client machine to the table if appears to be brute forcing
-pass in on egress proto tcp to (egress) port ssh modulate state \
+pass in on egress proto tcp to (egress) port {{ ssh_external_port }} modulate state \
   (max-src-conn 10, max-src-conn-rate 5/5, \
    overload <ssh-brute-force> flush global)
