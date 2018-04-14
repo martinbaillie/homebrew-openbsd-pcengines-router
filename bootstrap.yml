@@ -3,7 +3,7 @@
   become: true
   become_method: su
   vars:
-    ansible_python_interpreter: /usr/local/bin/python2.7
+    ansible_python_interpreter: /usr/local/bin/python3
 
   tasks:
     - name: load settings

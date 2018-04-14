@@ -4,6 +4,8 @@
 
 This repo contains revised notes and Ansible collateral from building this fully open source router, circa early Feb 2017.
 
+2018 Update: moved from OpenBSD 6.0-CURRENT to 6.3-STABLE. The router had a solid 400 day uptime.
+
 ![Router](./router.png "Router")
 
 #### What
@@ -75,6 +77,8 @@ I was using a Macbook/macOS for this project.
 Serial Settings: 115200 baud rate, 8N1 (8 data bits, no parity, 1 stop bit). See [here](http://pcengines.ch/howto.htm#serialconsole).
 
 The [PCEngines usbcom1a](http://www.pcengines.ch/usbcom1a.htm) uses the Silicon Labs CP2104 controller for which you can grab the driver [here](https://www.silabs.com/products/mcu/pages/usbtouartbridgevcpdrivers.aspx) (Mac/Linux/Windows)
+
+> 2018 update: to get this driver working on Sierra I had to install the legacy version of v5 *twice*. The double install gets the devices created and kernel driver loaded. No response from SiLabs on a fix at the time of writing this.
 
 ```bash
 # Use a terminal multiplexer like `screen`
