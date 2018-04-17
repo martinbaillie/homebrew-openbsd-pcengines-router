@@ -1,0 +1,11 @@
+daemon="/usr/bin/node_exporter"
+daemon_flags=""
+daemon_user=_node-exporter
+
+. /etc/rc.d/rc.subr
+
+pexp="${daemon}.*"
+rc_bg=YES
+rc_reload=NO
+
+rc_cmd $1

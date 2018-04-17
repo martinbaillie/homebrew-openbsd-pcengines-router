@@ -6,7 +6,7 @@ This repo contains revised notes and Ansible collateral from building this fully
 
 2018 Update: moved from OpenBSD 6.0-CURRENT to 6.3-STABLE. The router had a solid 400 day uptime.
 
-![Router](./router.png "Router")
+![Router](./images/router.png "Router")
 
 #### What
 
@@ -45,7 +45,7 @@ Total (incl. shipping to Australia): **$183.20 USD**
 
 ## Assembly
 
-![Assemble](./assemble.png "Assemble")
+![Assemble](./images/assemble.png "Assemble")
 
 > NOTE: Prior to assembly it would be wise to read the APU2 series [board reference](http://www.pcengines.ch/pdf/apu2.pdf).
 
@@ -87,7 +87,7 @@ screen /dev/tty.SLAB_USBtoUART 115200
 <C-a D D>
 ```
 
-![Screen Session](./serial_console.png "Screen Session")
+![Screen Session](./images/serial_console.png "Screen Session")
 
 > NOTE: pay attention to the BIOS version here, later you will decide whether it needs updated or not.
 
@@ -102,7 +102,7 @@ First and foremost, you should probably run a Memtest.
 
 3. Select: Payload [memtest]
 
-![Memtest](./memtest.png "Memtest")
+![Memtest](./images/memtest.png "Memtest")
 
 4. ~2 hours later I had completed one pass which was good enough for me.
 
@@ -282,6 +282,15 @@ The [pf.conf(5)](http://man.openbsd.org/pf.conf.5) jinja2 template is individual
 
 - A state table is maintained for suspected SSH brute force attempts. Any client matching a brute force pattern will be added to this table and subsequently dropped.
 - [`syslogd(8)`](http://man.openbsd.org/syslogd) is used to translate firewall logs into ASCII format, and a cron and [`pf_log_rotate.sh`](./files/pf_log_rotate.sh) is used for rotation.
+
+#### Monitoring
+Prometheus' `node_exporter` is installed and configured as a system daemon as part of the Ansible provision run.
+
+I have Prometheus itself running, along with Alertmanager and Grafana, on another server within my network. This is the [dashboard](./OpenBSDNodes.json) I'm using. It looks something like this:
+
+![Grafana 1](./images/grafana1.png "Grafana 1")
+
+![Grafana 2](./images/grafana2.png "Grafana 2")
 
 #### TODO
 - Port knocking for services like Transmission

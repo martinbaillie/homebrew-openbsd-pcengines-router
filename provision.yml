@@ -15,6 +15,24 @@
       openbsd_pkg: name="{{item}}" state='present'
       with_items: "{{packages}}"
 
+    - name: install prometheus node_exporter
+      become: yes
+      command: go get github.com/prometheus/node_exporter
+      args:
+        creates: /usr/bin/node_exporter
+      environment:
+        GOPATH: /usr
+
+    - name: add node_exporter user
+      user:
+        name: _node-exporter
+        shell: /sbin/nologin
+        home: /nonexistent
+        create_home: false
+
+    - name: copy prometheus node_exporter rc script
+      copy: src='{{dir_files}}/nodeexporter' dest='/etc/rc.d/' owner='root' group='wheel' mode='a+x'
+
     - name: update root user full name
       command: usermod -c "{{full_name}}" root
 
@@ -110,7 +128,6 @@
       command: /usr/local/bin/adservers_mkdb
       ignore_errors: yes
 
-
     - name: cron to update adservers db
       cron:
         name: 'update adservers db'
@@ -186,3 +203,4 @@
         - { name: 'dhcpd',  flags: 'vether0' }
         - { name: 'sensorsd',  flags: '' }
         - { name: 'sndiod',  flags: 'NO' }
+        - { name: 'nodeexporter',  flags: '--web.listen-address={{network_address}}:9100' }
