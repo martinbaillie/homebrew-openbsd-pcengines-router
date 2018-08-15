@@ -67,6 +67,12 @@
           VISUAL=$EDITOR
           export EDITOR VISUAL
 
+    - name: ntp servers
+      template: src='{{dir_templates}}/ntpd.conf.j2' dest='/etc/ntpd.conf' owner='root' group='wheel' mode='0644'
+
+    - name: set date from remote
+      command: rdate -nv {{ ntp_pool }}
+
     - name: clone dotfiles ({{user}})
       become_user: "{{user}}"
       git:
@@ -133,9 +139,6 @@
         name: 'update adservers db'
         special_time: monthly
         job: '/usr/local/bin/adservers_mkdb'
-
-    - name: ntp servers
-      template: src='{{dir_templates}}/ntpd.conf.j2' dest='/etc/ntpd.conf' owner='root' group='wheel' mode='0644'
 
     - name: network bridge
       copy: src='{{dir_files}}/hostname.bridge0' dest='/etc/hostname.bridge0' owner='root' group='wheel' mode='0640'

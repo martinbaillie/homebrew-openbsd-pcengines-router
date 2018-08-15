@@ -4,7 +4,9 @@
 
 This repo contains revised notes and Ansible collateral from building this fully open source router, circa early Feb 2017.
 
-2018 Update: moved from OpenBSD 6.0-CURRENT to 6.3-STABLE. The router had a solid 400 day uptime.
+08/18 update: friends don't let friends have [Bufferbloat](https://en.wikipedia.org/wiki/Bufferbloat). [FQ-CoDel](https://en.wikipedia.org/wiki/CoDel) was merged into 6.2 so take [advantage](#bufferbloat) of it.
+
+03/18 update: moved from OpenBSD 6.0-CURRENT to 6.3-STABLE. The router had a solid 400 day uptime.
 
 ![Router](./images/router.png "Router")
 
@@ -283,6 +285,13 @@ The [pf.conf(5)](http://man.openbsd.org/pf.conf.5) jinja2 template is individual
 - A state table is maintained for suspected SSH brute force attempts. Any client matching a brute force pattern will be added to this table and subsequently dropped.
 - [`syslogd(8)`](http://man.openbsd.org/syslogd) is used to translate firewall logs into ASCII format, and a cron and [`pf_log_rotate.sh`](./files/pf_log_rotate.sh) is used for rotation.
 
+#### Bufferbloat
+Also found in the [pf.conf(5)](http://man.openbsd.org/pf.conf.5) is a fix for [Bufferbloat](https://www.bufferbloat.net/projects/bloat/wiki/Introduction/). The `uplink_` variables should be set to about [90-95%](https://www.reddit.com/r/openbsd/comments/75ps6h/fqcodel_and_pf/doca4uv) of your uplink up/down in megabytes.
+
+Use DSLreports.com's SpeedTest for Bufferbloat analysis:
+
+![Bufferbloat](./images/bufferbloat.png "Bufferbloat")
+
 #### Monitoring
 Prometheus' `node_exporter` is installed and configured as a system daemon as part of the Ansible provision run.
 
@@ -291,6 +300,7 @@ I have Prometheus itself running, along with Alertmanager and Grafana, on anothe
 ![Grafana 1](./images/grafana1.png "Grafana 1")
 
 ![Grafana 2](./images/grafana2.png "Grafana 2")
+
 
 #### TODO
 - Port knocking for services like Transmission

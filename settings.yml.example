@@ -1,4 +1,4 @@
-# EXAMPLE settings.yml to feed the Ansible scripting
+# EXAMPLE settings.yml to feed the Ansible playbooks
 user:
 full_name:
 email:
@@ -18,7 +18,7 @@ hostname:
 nameservers:
   - 127.0.0.1
   - 8.8.8.8
-  - 8.8.4.4
+  - 1.1.1.1
 
 network_address: 192.168.1.1
 network_subnet: 192.168.1
@@ -43,6 +43,13 @@ dir_files: files
 dir_templates: templates
 
 ssh_external_port: 443
+
+# Bufferbloat
+# Set to about 90-95% of your uplink up/down in megabytes
+# https://www.reddit.com/r/openbsd/comments/75ps6h/fqcodel_and_pf/doca4uv/
+# Use DSLreports.com's SpeedTest for Bufferbloat analysis
+uplink_upload: 11
+uplink_download: 110
 
 dotfiles_repo: git@github.com:someone/dotfiles.git
 dotfiles_links:
