@@ -4,7 +4,9 @@
 
 This repo contains revised notes and Ansible collateral from building this fully open source router, circa early Feb 2017.
 
-08/18 update: friends don't let friends have [Bufferbloat](https://en.wikipedia.org/wiki/Bufferbloat). [FQ-CoDel](https://en.wikipedia.org/wiki/CoDel) was merged into 6.2 so take [advantage](#bufferbloat) of it.
+08/18 update: an official [WireGuard](https://www.wireguard.com/xplatform) userspace implementation is available and working on OpenBSD 6.3. The router now features this [revolutionary](#wireguard) VPN on tun0.
+
+07/18 update: friends don't let friends have [Bufferbloat](https://en.wikipedia.org/wiki/Bufferbloat). [FQ-CoDel](https://en.wikipedia.org/wiki/CoDel) was merged into 6.2 so take [advantage](#bufferbloat) of it.
 
 03/18 update: moved from OpenBSD 6.0-CURRENT to 6.3-STABLE. The router had a solid 400 day uptime.
 
@@ -215,7 +217,7 @@ Anyway, choose `-STABLE` or `-CURRENT` (or perhaps 6.1+) based on your WiFi acce
 
 ## Immutability
 
-It would be poor form to not [practice what I preach](https://martinfowler.com/bliki/ImmutableServer.html) in my day job and so I've taken to driving all modifications to the userspace using automation. The "immutability" aspect could be further improved with something like [Packer](https://www.packer.io) building out the OpenBSD filesystem image but that seemed like overkill. I just wanted to be able to blow away the OS and bring it back to where it was. I took the easy way out with Ansible and may revisit with something like NixOps which has been on my learn-list for ages.
+It would be poor form to not [practice what I preach](https://martinfowler.com/bliki/ImmutableServer.html) in my day job and so I've taken to driving all modifications to the userspace using automation. The "immutability" aspect could be further improved with something like [Packer](https://www.packer.io) building out the OpenBSD filesystem image but that seemed like overkill. I just wanted to be able to blow away the OS and bring it back to where it was. I took the easy way out with (some pretty unidiomatic) Ansible and may revisit with something like NixOps which has been on my learn-list for ages.
 
 ## Ansible
 
@@ -291,6 +293,17 @@ Also found in the [pf.conf(5)](http://man.openbsd.org/pf.conf.5) is a fix for [B
 Use DSLreports.com's SpeedTest for Bufferbloat analysis:
 
 ![Bufferbloat](./images/bufferbloat.png "Bufferbloat")
+
+#### WireGuard
+[WireGuard](https://www.wireguard.com)-go implementation is installed and configured through the provisioning process. It's possible to configure things like port, CIDR blocks, peers etc. through `settings.yml`.
+
+I'm pairing remote access mostly with macOS. I'd recommend making use of `pass` by the same author as WireGuard for encrypting private keys. This is achieved simply by replacing the `PrivateKey` line under [Interface] in the wireguard config with:
+
+```bash
+PostUp = wg set %i private-key <(su user -c "export PASSWORD_STORE_DIR=/path/to/pass/store/; pass WireGuard/private-keys/%i")
+```
+
+In terms of workflow on macOS, [here's](https://techcrunch.com/2018/07/28/how-i-made-my-own-wireguard-vpn-server/) how you'd use AppleScript and the WireGuard CLI tools.
 
 #### Monitoring
 Prometheus' `node_exporter` is installed and configured as a system daemon as part of the Ansible provision run.

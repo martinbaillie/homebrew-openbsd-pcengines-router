@@ -1,0 +1,4 @@
+inet {{ wireguard_address }} {{ wireguard_mask }}
+mtu 1492
+up
+!/sbin/route -q -n add -inet {{ wireguard_cidr }} -iface {{ wireguard_address }}

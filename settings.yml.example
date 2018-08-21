@@ -22,6 +22,7 @@ nameservers:
 
 network_address: 192.168.1.1
 network_subnet: 192.168.1
+network_cidr: 192.168.1.0/24
 network_mask: 255.255.255.0
 network_broadcast: 192.168.1.255
 network_domain: a.domain
@@ -33,6 +34,15 @@ network_fixed_clients:
   a-laptop:
     logical: 192.168.1.3
     physical: 24:55:b9:06:f9:05
+
+wireguard_address: 10.0.1.1
+wireguard_cidr: 10.0.1.1/24
+wireguard_mask: 255.255.255.0
+wireguard_listen_port: 51820
+wireguard_peers:
+  a-laptop:
+    public_key:
+    allowed_ips: 0.0.0.0/0
 
 ntp_pool: au.pool.ntp.org
 

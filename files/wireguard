@@ -1,0 +1,12 @@
+daemon="/usr/local/bin/wireguard-go"
+
+. /etc/rc.d/rc.subr
+
+rc_reload=NO
+
+rc_start () {
+    ${rcexec} "${daemon} tun" || return 1
+    /usr/local/bin/wg setconf "${daemon_flags}" "/etc/wireguard/${daemon_flags}.conf"
+}
+
+rc_cmd $1

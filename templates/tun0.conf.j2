@@ -1,0 +1,12 @@
+[Interface]
+PrivateKey = {{ wireguard_private_key_cmd.stdout }}
+ListenPort = {{ wireguard_listen_port }}
+
+{% for peer in wireguard_peers %}
+# {{ peer }}
+[Peer]
+Endpoint = {{ ansible_default_ipv4['address'] }}:{{ wireguard_listen_port }}
+PublicKey = {{ wireguard_peers[peer].public_key }}
+AllowedIPs = {{ wireguard_peers[peer].allowed_ips }}
+
+{% endfor %}

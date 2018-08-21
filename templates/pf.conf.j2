@@ -1,5 +1,5 @@
 # internal interfaces
-int_if="{ vether0 athn0 em1 em2 }"
+int_if="{ tun0 vether0 athn0 em1 em2 }"
 # egress keyword used to represent the interface with the default route
 
 # table of bogus private addresses. bogons, martians..
@@ -60,6 +60,9 @@ match out on egress proto { tcp, udp } to port domain set prio (6, 7)
 
 # allow ssh connections on chosen external port
 pass in on egress inet proto tcp from any to (egress) port {{ ssh_external_port }}
+
+# allow wireguard connections on chosen external port
+pass in on egress inet proto udp from any to (egress) port {{ wireguard_listen_port }}
 
 # SSH brute force blackhole table
 table <ssh-brute-force> persist

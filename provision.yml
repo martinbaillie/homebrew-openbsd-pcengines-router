@@ -9,6 +9,9 @@
     - name: load settings
       include_vars: "settings.yml"
 
+    - name: set install url
+      command: echo "{{openbsd_mirror}}/{{openbsd_mirror_directory}}" > /etc/installurl
+
     - name: packages
       environment:
         PKG_PATH: "{{openbsd_mirror}}/{{openbsd_mirror_directory}}"
@@ -31,7 +34,38 @@
         create_home: false
 
     - name: copy prometheus node_exporter rc script
-      copy: src='{{dir_files}}/nodeexporter' dest='/etc/rc.d/' owner='root' group='wheel' mode='a+x'
+      copy: src='nodeexporter' dest='/etc/rc.d/' owner='root' group='wheel' mode='a+x'
+
+      # TODO INSTALL wireguard here
+      
+    - name: copy wireguard rc script
+      copy: src='wireguard' dest='/etc/rc.d/' owner='root' group='wheel' mode='a+x'
+
+    - name: wireguard conf directory
+      file: path='/etc/wireguard' state='directory' owner='root' group='wheel' mode='0640'
+
+    - name: generate wireguard private key
+      shell: "umask 077; wg genkey > /etc/wireguard/privatekey"
+      args:
+        creates: "/etc/wireguard/privatekey"
+
+    - name: register wireguard private key
+      command: "cat /etc/wireguard/privatekey"
+      register: wireguard_private_key_cmd
+      changed_when: false
+
+    - name: compute wireguard public key
+      shell: "wg pubkey < /etc/wireguard/publickey"
+      register: "wireguard_public_key_cmd"
+      changed_when: false
+
+    - name: wireguard conf
+      template:
+        src: "tun0.conf.j2"
+        dest: "/etc/wireguard/tun0.conf"
+        owner: root
+        group: wheel
+        mode: 0640
 
     - name: update root user full name
       command: usermod -c "{{full_name}}" root
@@ -68,10 +102,10 @@
           export EDITOR VISUAL
 
     - name: ntp servers
-      template: src='{{dir_templates}}/ntpd.conf.j2' dest='/etc/ntpd.conf' owner='root' group='wheel' mode='0644'
+      template: src='ntpd.conf.j2' dest='/etc/ntpd.conf' owner='root' group='wheel' mode='0644'
 
     - name: set date from remote
-      command: rdate -nv {{ ntp_pool }}
+      command: rdate -nv {{ntp_pool}}
 
     - name: clone dotfiles ({{user}})
       become_user: "{{user}}"
@@ -113,11 +147,11 @@
       lineinfile: dest='/etc/fstab' backrefs='yes' regexp='^([0-9a-f]{16}\.[a-z]{1})\ / ' line='\1 / ffs rw,noatime,softdep 1 1'
 
     - name: dns resolvers
-      template: src='{{dir_templates}}/resolv.conf.j2' dest='/etc/resolv.conf' owner='root' group='wheel' mode='0644'
+      template: src='resolv.conf.j2' dest='/etc/resolv.conf' owner='root' group='wheel' mode='0644'
 
     - name: recursive caching dns server (unbound)
       template:
-        src: '{{dir_templates}}/unbound.conf.j2'
+        src: 'unbound.conf.j2'
         dest: '/var/unbound/etc/unbound.conf'
         owner: 'root'
         group: 'wheel'
@@ -128,7 +162,7 @@
       copy: remote_src=true src=/var/unbound/etc/unbound.conf dest=/etc/unbound.conf
 
     - name: adservers mkdb script
-      copy: src='{{dir_files}}/adservers_mkdb.sh' dest='/usr/local/bin/adservers_mkdb' owner='root' group='wheel' mode='a+x'
+      copy: src='adservers_mkdb.sh' dest='/usr/local/bin/adservers_mkdb' owner='root' group='wheel' mode='a+x'
 
     - name: create adservers db
       command: /usr/local/bin/adservers_mkdb
@@ -141,32 +175,35 @@
         job: '/usr/local/bin/adservers_mkdb'
 
     - name: network bridge
-      copy: src='{{dir_files}}/hostname.bridge0' dest='/etc/hostname.bridge0' owner='root' group='wheel' mode='0640'
+      copy: src='hostname.bridge0' dest='/etc/hostname.bridge0' owner='root' group='wheel' mode='0640'
 
     - name: virtual ethernet interface
-      template: src='{{dir_templates}}/hostname.vether0.j2' dest='/etc/hostname.vether0' owner='root' group='wheel' mode='0640'
+      template: src='hostname.vether0.j2' dest='/etc/hostname.vether0' owner='root' group='wheel' mode='0640'
 
     - name: physical ethernet interfaces
-      copy: src='{{dir_files}}/hostname.emx' dest="/etc/hostname.{{item}}" owner="root" group="wheel" mode="0640"
+      copy: src='hostname.emx' dest="/etc/hostname.{{item}}" owner="root" group="wheel" mode="0640"
       with_items:
         - 'em0'
         - 'em1'
         - 'em2'
 
     - name: ppp over ethernet
-      template: src='{{dir_templates}}/hostname.pppoe0.j2' dest='/etc/hostname.pppoe0' owner='root' group='wheel' mode='0640'
+      template: src='hostname.pppoe0.j2' dest='/etc/hostname.pppoe0' owner='root' group='wheel' mode='0640'
 
     - name: wireless access point
-      template: src='{{dir_templates}}/hostname.athn0.j2' dest='/etc/hostname.athn0' owner='root' group='wheel' mode='0640'
+      template: src='hostname.athn0.j2' dest='/etc/hostname.athn0' owner='root' group='wheel' mode='0640'
+
+    - name: wireguard tunnel
+      template: src='hostname.tun0.j2' dest='/etc/hostname.tun0' owner='root' group='wheel' mode='0640'
 
     - name: dhcpd
-      template: src='{{dir_templates}}/dhcpd.conf.j2' dest='/etc/dhcpd.conf' owner='root' group='wheel' mode='0640'
+      template: src='dhcpd.conf.j2' dest='/etc/dhcpd.conf' owner='root' group='wheel' mode='0640'
 
     - name: sensorsd
-      copy: src='{{dir_files}}/sensorsd.conf' dest='/etc/sensorsd.conf' owner='root' group='wheel' mode='0600'
+      copy: src='sensorsd.conf' dest='/etc/sensorsd.conf' owner='root' group='wheel' mode='0600'
 
     - name: bogon mkdb script
-      copy: src='{{dir_files}}/bogons_mkdb.sh' dest='/usr/local/bin/bogons_mkdb' owner='root' group='wheel' mode='a+x'
+      copy: src='bogons_mkdb.sh' dest='/usr/local/bin/bogons_mkdb' owner='root' group='wheel' mode='a+x'
 
     - name: create bogons db
       command: /usr/local/bin/bogons_mkdb
@@ -178,13 +215,13 @@
         job: '/usr/local/bin/bogons_mkdb'
 
     - name: packet filter (pf)
-      template: src='{{dir_templates}}/pf.conf.j2' dest='/etc/pf.conf' owner='root' group='wheel' mode='0600' validate='pfctl -nf %s'
+      template: src='pf.conf.j2' dest='/etc/pf.conf' owner='root' group='wheel' mode='0600' validate='pfctl -nf %s'
 
     - name: syslog conf for pf
       lineinfile: dest='/etc/syslog.conf' line='local0.info     /var/log/pflog.txt'
 
     - name: pf log rotator
-      copy: src='{{dir_files}}/pf_log_rotate.sh' dest='/usr/local/bin/pf_log_rotate' owner='root' group='wheel' mode='a+x'
+      copy: src='pf_log_rotate.sh' dest='/usr/local/bin/pf_log_rotate' owner='root' group='wheel' mode='a+x'
 
     - name: cron to rotate pf logs
       cron:
@@ -196,7 +233,7 @@
       file: path='/var/log/pflog.txt' owner='root' group='wheel' mode='0600' state='touch'
 
     - name: kernel configuration (sysctl)
-      copy: src='{{dir_files}}/sysctl.conf' dest='/etc/sysctl.conf' owner='root' group='wheel' mode='0600'
+      copy: src='sysctl.conf' dest='/etc/sysctl.conf' owner='root' group='wheel' mode='0600'
 
     - name: enable services
       lineinfile: dest='/etc/rc.conf.local' regexp='^{{item.name}}_flags=' line='{{item.name}}_flags=\"{{item.flags}}\"' create='yes'
@@ -207,3 +244,4 @@
         - { name: 'sensorsd',  flags: '' }
         - { name: 'sndiod',  flags: 'NO' }
         - { name: 'nodeexporter',  flags: '--web.listen-address={{network_address}}:9100' }
+        - { name: 'wireguard',  flags: 'tun0' }
