@@ -295,9 +295,9 @@ Use DSLreports.com's SpeedTest for Bufferbloat analysis:
 ![Bufferbloat](./images/bufferbloat.png "Bufferbloat")
 
 #### WireGuard
-[WireGuard](https://www.wireguard.com)-go implementation is installed and configured through the provisioning process. It's possible to configure things like port, CIDR blocks, peers etc. through `settings.yml`.
+The [WireGuard](https://www.wireguard.com)-go implementation is installed and configured via the provisioning process. It's possible to change things like port, CIDR blocks, peers etc. through `settings.yml`.
 
-I'm pairing remote access mostly with macOS. I'd recommend making use of `pass` by the same author as WireGuard for encrypting private keys. This is achieved simply by replacing the `PrivateKey` line under [Interface] in the wireguard config with:
+I'm mostly remotely accessing my home network with macOS. I'd recommend making use of [pass](https://www.passwordstore.org/) by the same author as WireGuard for encrypting private keys. This is achieved simply by replacing the `PrivateKey` line under `[Interface]` in the WireGuard config with:
 
 ```bash
 PostUp = wg set %i private-key <(su user -c "export PASSWORD_STORE_DIR=/path/to/pass/store/; pass WireGuard/private-keys/%i")
