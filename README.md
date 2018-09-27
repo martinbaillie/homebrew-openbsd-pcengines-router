@@ -316,6 +316,11 @@ I have Prometheus itself running, along with Alertmanager and Grafana, on anothe
 
 
 #### TODO
+- IRC bouncer
+- Revise/improve ad blocking
+    - https://www.geoghegan.ca/unbound-adblock.html
+    - https://www.geoghegan.ca/pfbadhost.html
+    - PiHole https://firebog.net/
 - Port knocking for services like Transmission
 - IPv6
 - Set certain partitions as read-only
