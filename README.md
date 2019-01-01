@@ -25,6 +25,8 @@
 
 This repo contains revised notes and Ansible collateral from building this fully open source router, circa early Feb 2017.
 
+01/19 update: switch to DNS-over-TLS and a much larger adservers/bad sites [blacklist](https://v.firebog.net/hosts/lists.php) collated from multiple sources.
+
 08/18 update: an official [WireGuard](https://www.wireguard.com/xplatform) userspace implementation is available and working on OpenBSD 6.3. The router now features this [revolutionary](#wireguard) VPN on tun0.
 
 07/18 update: friends don't let friends have [Bufferbloat](https://en.wikipedia.org/wiki/Bufferbloat). [FQ-CoDel](https://en.wikipedia.org/wiki/CoDel) was merged into 6.2 so take [advantage](#bufferbloat) of it.
@@ -282,7 +284,7 @@ Unbound DNS is enabled and configured to be a recursive caching DNS with upstrea
 
 Fixed LAN clients declared in `settings.yml` are added as local-data resolutions, including the server hostname itself. The are also set up for reverse DNS.
 
-Finally a list of [adservers](https://pgl.yoyo.org/adservers/serverlist.php?hostformat=unbound&showintro=0&startdate%5Bday%5D=&startdate%5Bmonth%5D=&startdate%5Byear%5D=&mimetype=plaintext) is loaded, with each configured to resolve localhost i.e. blocked. The adservers db is updated monthly from upstream using cron.
+Finally a [blacklist of domains](https://v.firebog.net/hosts/lists.php) is scraped, parsed and loaded, with each configured to resolve localhost i.e. null routed. The DB is updated monthly from upstream using a cron.
 
 #### Network Time
 NTP is enabled and pointed at a pool as per `settings.yml` and [`dhcpd(8)`](http://man.openbsd.org/dhcpd.8) is configured to advertise this to clients.
@@ -336,9 +338,5 @@ I have Prometheus itself running, along with Alertmanager and Grafana, on anothe
 
 #### TODO
 - IRC bouncer
-- Revise/improve ad blocking
-    - https://www.geoghegan.ca/unbound-adblock.html
-    - https://www.geoghegan.ca/pfbadhost.html
-    - PiHole https://firebog.net/
 - Port knocking for LAN services
 - Set certain partitions as read-only

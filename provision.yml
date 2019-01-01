@@ -156,7 +156,9 @@
         owner: 'root'
         group: 'wheel'
         mode: '0644'
-        validate: 'env ANSIBLE_IGNORE=%s unbound-checkconf'
+
+    - name: copy unbound rc script
+      copy: src='unbound' dest='/etc/rc.d/' owner='root' group='wheel' mode='a+x'
 
     - name: copy unbound conf
       copy: remote_src=true src=/var/unbound/etc/unbound.conf dest=/etc/unbound.conf
@@ -167,6 +169,8 @@
     - name: create adservers db
       command: /usr/local/bin/adservers_mkdb
       ignore_errors: yes
+      args:
+        creates: /etc/adservers.db
 
     - name: cron to update adservers db
       cron:
@@ -207,6 +211,8 @@
 
     - name: create bogons db
       command: /usr/local/bin/bogons_mkdb
+      args:
+        creates: /etc/adservers.db
 
     - name: cron to update bogons db
       cron:
