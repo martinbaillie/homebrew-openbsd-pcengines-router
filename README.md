@@ -1,5 +1,26 @@
 # homebrew-openbsd-pcengines-router
 
+- [About](#about)
+- [Purchases](#purchases)
+- [Assembly](#assembly) 
+- [Running](#running) 
+- [Memtest](#memtest)
+- [BIOS Update](#bios-update)
+- [OpenBSD](#openbsd)
+- [Immutability](#immutability)
+- [Ansible](#ansible)
+- [Noteworthy Configurations](#noteworth-configurations)
+    - [Mail](#mail)
+    - [Sensors](#sensors)
+    - [Disk](#disk)
+    - [DNS-over-TLS](#dns-over-tls)
+    - [Networking](#networking)
+    - [Network Time](#network-time)
+    - [Firewalling](#firewalling)
+    - [Bufferbloat](#bufferbloat)
+    - [WireGuard](#wireguard)
+    - [Prometheus](#prometheus)
+
 ## About
 
 This repo contains revised notes and Ansible collateral from building this fully open source router, circa early Feb 2017.
@@ -256,7 +277,7 @@ With SMTP relay set up, the last steps involving mail are to configure a mail al
 #### Disk
 [fstab(5)](http://man.openbsd.org/fstab) is updated to mount the root filesystem with no access time logging and soft updates for performance reasons.
 
-#### DNS (over TLS)
+#### DNS-over-TLS
 Unbound DNS is enabled and configured to be a recursive caching DNS with upstream DNS-over-TLS nameservers (so my DNS requests are encrypted in transit). At the other end I'm using [Cloudflare](https://blog.cloudflare.com/announcing-1111). From where I am, Cloudflare is faster than Google, and state they'll never use the data and wipe logs within 24h, with KPMG on retainer performing audits keeping them to their word.
 
 Fixed LAN clients declared in `settings.yml` are added as local-data resolutions, including the server hostname itself. The are also set up for reverse DNS.
@@ -303,7 +324,7 @@ PostUp = wg set %i private-key <(su user -c "export PASSWORD_STORE_DIR=/path/to/
 
 In terms of workflow on macOS, [here's](https://techcrunch.com/2018/07/28/how-i-made-my-own-wireguard-vpn-server/) how you'd use AppleScript and the WireGuard CLI tools.
 
-#### Monitoring
+#### Prometheus
 Prometheus' `node_exporter` is installed and configured as a system daemon as part of the Ansible provision run.
 
 I have Prometheus itself running, along with Alertmanager and Grafana, on another server within my network. This is the [dashboard](./OpenBSDNodes.json) I'm using. It looks something like this:
@@ -319,5 +340,5 @@ I have Prometheus itself running, along with Alertmanager and Grafana, on anothe
     - https://www.geoghegan.ca/unbound-adblock.html
     - https://www.geoghegan.ca/pfbadhost.html
     - PiHole https://firebog.net/
-- Port knocking for services like Transmission
+- Port knocking for LAN services
 - Set certain partitions as read-only
