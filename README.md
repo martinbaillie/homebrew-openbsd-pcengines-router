@@ -256,14 +256,12 @@ With SMTP relay set up, the last steps involving mail are to configure a mail al
 #### Disk
 [fstab(5)](http://man.openbsd.org/fstab) is updated to mount the root filesystem with no access time logging and soft updates for performance reasons.
 
-#### DNS
-Unbound DNS is enabled and configured to be a recursive caching DNS with upstream nameservers taken from `settings.yml`.
+#### DNS (over TLS)
+Unbound DNS is enabled and configured to be a recursive caching DNS with upstream DNS-over-TLS nameservers (so my DNS requests are encrypted in transit). At the other end I'm using [Cloudflare](https://blog.cloudflare.com/announcing-1111). From where I am, Cloudflare is faster than Google, and state they'll never use the data and wipe logs within 24h, with KPMG on retainer performing audits keeping them to their word.
 
 Fixed LAN clients declared in `settings.yml` are added as local-data resolutions, including the server hostname itself. The are also set up for reverse DNS.
 
 Finally a list of [adservers](https://pgl.yoyo.org/adservers/serverlist.php?hostformat=unbound&showintro=0&startdate%5Bday%5D=&startdate%5Bmonth%5D=&startdate%5Byear%5D=&mimetype=plaintext) is loaded, with each configured to resolve localhost i.e. blocked. The adservers db is updated monthly from upstream using cron.
-
-> TODO: look into configuring Unbound up with [dnscrypt](https://dnscrypt.org) ([dnscrypt-proxy](http://ports.su/net/dnscrypt-proxy,-main) from ports).
 
 #### Network Time
 NTP is enabled and pointed at a pool as per `settings.yml` and [`dhcpd(8)`](http://man.openbsd.org/dhcpd.8) is configured to advertise this to clients.
@@ -322,5 +320,4 @@ I have Prometheus itself running, along with Alertmanager and Grafana, on anothe
     - https://www.geoghegan.ca/pfbadhost.html
     - PiHole https://firebog.net/
 - Port knocking for services like Transmission
-- IPv6
 - Set certain partitions as read-only

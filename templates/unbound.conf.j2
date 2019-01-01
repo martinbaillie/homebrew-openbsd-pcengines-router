@@ -3,6 +3,8 @@ server:
   interface: {{ network_address }}
   interface: {{ wireguard_address }}
   do-ip6: no
+  prefetch: yes
+  rrset-roundrobin: yes
 
   access-control: 0.0.0.0/0 refuse
   access-control: ::0/0 refuse
@@ -31,6 +33,7 @@ forward-zone:
   {% for nameserver in nameservers %}
   forward-addr: {{ nameserver }}
   {% endfor %}
+  forward-ssl-upstream: yes
 
 remote-control:
   control-enable: yes
