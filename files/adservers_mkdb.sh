@@ -24,8 +24,9 @@ unset LANG && \
 
 # Restart unbound
 chown _unbound:_unbound /etc/adservers.db
+pkill -9 -u _unbound unbound
 rcctl stop unbound
 rcctl start unbound
 
 # Warm up
-curl -LIs www.google.com > /dev/null
+curl -LIs www.google.com > /dev/null || curl -LIs www.google.com > /dev/null 

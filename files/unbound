@@ -21,8 +21,4 @@ rc_start() {
 		${rcexec} "unbound ${daemon_flags}"
 }
 
-rc_check() {
-		/usr/sbin/unbound-checkconf > /dev/null
-}
-
 rc_cmd $1
