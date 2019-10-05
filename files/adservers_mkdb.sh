@@ -3,8 +3,8 @@ set -euo pipefail
 
 # Populate a new monster DB
 unset LANG && \
-    for site in $(curl -s 'https://v.firebog.net/hosts/lists.php?type=tick'); do
-        curl -sL "${site}" || :;
+    for site in $(curl --fail -s 'https://v.firebog.net/hosts/lists.php?type=tick'); do
+        curl --fail -sL "${site}" || :;
     done | \
     sed -e 's/^127.0.0.1\s*//g; s/^0.0.0.0\s*//g; s/^0\s*//g; s/localhost//g' \
     -e 's/\s*#.*$//' -e '/^\s*$/d' -e $'s/\r//' | \
