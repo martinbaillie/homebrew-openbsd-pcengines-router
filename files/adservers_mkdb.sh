@@ -16,7 +16,7 @@ unset LANG && \
     uniq | \
     { 
         while read -r site; do 
-            echo -e "local-data: \"${site} A 127.0.0.1\"\\nlocal-zone: \"${site}\" redirect";
+            echo -e "local-zone: \"${site}\" refuse";
         done
     } > /etc/adservers.db
 # OLD
