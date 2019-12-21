@@ -13,6 +13,9 @@ wireless_key:
 pppoe_authname:
 pppoe_authkey:
 
+if_out: pppoe0
+if_in: vether0
+
 hostname:
 
 nameservers:
@@ -45,8 +48,8 @@ wireguard_peers:
 
 ntp_pool: au.pool.ntp.org
 
-openbsd_mirror: https://ftp.openbsd.org
-openbsd_mirror_directory: pub/OpenBSD/snapshots/packages/amd64
+openbsd_mirror: https://cloudflare.cdn.openbsd.org
+openbsd_mirror_directory: openbsd
 
 dir_files: files
 dir_templates: templates

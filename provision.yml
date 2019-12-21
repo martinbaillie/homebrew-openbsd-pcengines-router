@@ -13,10 +13,7 @@
       command: echo "{{openbsd_mirror}}/{{openbsd_mirror_directory}}" > /etc/installurl
 
     - name: packages
-      environment:
-        PKG_PATH: "{{openbsd_mirror}}/{{openbsd_mirror_directory}}"
-      openbsd_pkg: name="{{item}}" state='present'
-      with_items: "{{packages}}"
+      openbsd_pkg: name="{{packages}}" state='present'
 
     - name: install prometheus node_exporter
       become: yes
@@ -37,7 +34,7 @@
       copy: src='nodeexporter' dest='/etc/rc.d/' owner='root' group='wheel' mode='a+x'
 
       # TODO INSTALL wireguard here
-      
+
     - name: copy wireguard rc script
       copy: src='wireguard' dest='/etc/rc.d/' owner='root' group='wheel' mode='a+x'
 
@@ -112,7 +109,7 @@
       git:
         repo: "{{dotfiles_repo}}"
         dest: "/home/{{user}}/.dotfiles"
-        recursive: no 
+        recursive: no
         accept_hostkey: yes
         depth: 1
 
@@ -135,7 +132,8 @@
         dest: /etc/mail/smtpd.conf
         block: |
           table secrets db:/etc/mail/secrets.db
-          accept for any relay via tls+auth://googlemail@smtp.googlemail.com:587 auth <secrets>
+          action "relay" relay host tls+auth://googlemail@smtp.googlemail.com:587 auth <secrets>
+          match for any action "relay"
 
     - name: forward root mail to personal account
       lineinfile: dest='/etc/mail/aliases' regexp='^(#\ +)?root:' line='root{{\':\'}} {{email}}'

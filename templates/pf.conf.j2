@@ -22,8 +22,9 @@ match in all scrub (no-df random-id)
 match on egress scrub (max-mss 1452)
 
 # bufferbloat correction
-queue outq on egress flows 1024 bandwidth {{ uplink_upload }}M max {{ uplink_upload }}M qlimit 1024 default
-queue inq on $int_if flows 1024 bandwidth {{ uplink_download }}M max {{ uplink_download }}M qlimit 1024 default
+# NOTE: can no longer use an interface group (i.e. egress) with 'queue' (https://www.openbsd.org/faq/upgrade64.html)
+queue outq on {{ if_out }} flows 1024 bandwidth {{ uplink_upload }}M max {{ uplink_upload }}M qlimit 1024 default
+queue inq on {{ if_in }} flows 1024 bandwidth {{ uplink_download }}M max {{ uplink_download }}M qlimit 1024 default
 
 # network address translation
 match out on egress inet from !(egress:network) to any nat-to (egress:0)
