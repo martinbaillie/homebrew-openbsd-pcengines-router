@@ -164,6 +164,9 @@
     - name: adservers mkdb script
       copy: src='adservers_mkdb.sh' dest='/usr/local/bin/adservers_mkdb' owner='root' group='wheel' mode='a+x'
 
+    - name: create permitted adservers db
+      template: src='adservers_permitted.db.j2' dest='/etc/adservers_permitted.db' owner='root' group='wheel' mode='0640'
+
     - name: create adservers db
       command: /usr/local/bin/adservers_mkdb
       ignore_errors: yes
@@ -210,7 +213,7 @@
     - name: create bogons db
       command: /usr/local/bin/bogons_mkdb
       args:
-        creates: /etc/adservers.db
+        creates: /etc/bogons.db
 
     - name: cron to update bogons db
       cron:

@@ -75,3 +75,7 @@ packages:
   - 'git'
   - 'pftop'
   - 'iperf'
+
+adservers_permitted:
+  - 'opensubtitles.org'
+  - 'algolia.com'
