@@ -2,24 +2,24 @@
 
 - [About](#about)
 - [Purchases](#purchases)
-- [Assembly](#assembly) 
-- [Running](#running) 
+- [Assembly](#assembly)
+- [Running](#running)
 - [Memtest](#memtest)
 - [BIOS Update](#bios-update)
 - [OpenBSD](#openbsd)
 - [Immutability](#immutability)
 - [Ansible](#ansible)
 - [Noteworthy Configurations](#noteworth-configurations)
-    - [Mail](#mail)
-    - [Sensors](#sensors)
-    - [Disk](#disk)
-    - [DNS-over-TLS](#dns-over-tls)
-    - [Networking](#networking)
-    - [Network Time](#network-time)
-    - [Firewalling](#firewalling)
-    - [Bufferbloat](#bufferbloat)
-    - [WireGuard](#wireguard)
-    - [Prometheus](#prometheus)
+  - [Mail](#mail)
+  - [Sensors](#sensors)
+  - [Disk](#disk)
+  - [DNS-over-TLS](#dns-over-tls)
+  - [Networking](#networking)
+  - [Network Time](#network-time)
+  - [Firewalling](#firewalling)
+  - [Bufferbloat](#bufferbloat)
+  - [WireGuard](#wireguard)
+  - [Prometheus](#prometheus)
 
 ## About
 
@@ -49,20 +49,21 @@ Finally, pragmatically speaking, I wanted a little more muscle in my internet ap
 
 ## Purchases
 
-| Quantity | Part # | Description | USD | Origin
-|----------|--------|-------------|-------|-------
-| 1 | apu2c4 | APU.2C4 system board 4GB | $106.00 | TW
-| 1 | case1d2blku | Enclosure 3 LAN, black, USB | $9.40 | CN
-| 1 | ac12vuk | AC adapter 12V 2A UK for IT equipment | $4.30 | CN
-| 1 | msata16e | SSD M-Sata 16GB MLC Phison | $14.50 | TW
-| 1 | wle200nx | Compex WLE200NX miniPCI express card | $17.50 | CN
-| 2 | pigsma | Cable I-PEX -> reverse SMA | $2.90 | TW
-| 2 | antsmadb | Antenna reverse SMA dual band | $4.00 | CN
-| 1 | usbcom1a | Adapter USB to DB9F with cable | $7.50 | CN
+| Quantity | Part #      | Description                           | USD      | Origin |
+| -------- | ----------- | ------------------------------------- | -------- | ------ |
+| 1        | apu2c4      | APU.2C4 system board 4GB              | \$106.00 | TW     |
+| 1        | case1d2blku | Enclosure 3 LAN, black, USB           | \$9.40   | CN     |
+| 1        | ac12vuk     | AC adapter 12V 2A UK for IT equipment | \$4.30   | CN     |
+| 1        | msata16e    | SSD M-Sata 16GB MLC Phison            | \$14.50  | TW     |
+| 1        | wle200nx    | Compex WLE200NX miniPCI express card  | \$17.50  | CN     |
+| 2        | pigsma      | Cable I-PEX -> reverse SMA            | \$2.90   | TW     |
+| 2        | antsmadb    | Antenna reverse SMA dual band         | \$4.00   | CN     |
+| 1        | usbcom1a    | Adapter USB to DB9F with cable        | \$7.50   | CN     |
 
-Total (incl. shipping to Australia): **$183.20 USD**
+Total (incl. shipping to Australia): **\$183.20 USD**
 
 #### Additionally, you will need...
+
 - Small USB flash
 - Ethernet cables
 - OpenBSD
@@ -79,21 +80,21 @@ Total (incl. shipping to Australia): **$183.20 USD**
 1. Install heat spreader and make sure it's pressed against the enclosure.
 2. Attach bottom of enclosure, screw back in DB2 bolts and enclosure bolts.
 
-    > NOTE: Don't forget to remove the DB9 bolts when slotting in the enclosure.
+   > NOTE: Don't forget to remove the DB9 bolts when slotting in the enclosure.
 
 3. Attach the SSD (be sure to identify the mSATA from the mPCI slots) and any other mPCIs/SD cards.
 4. Attach the wireless radio card.
 
-    > NOTE: Wireless radio cards are ESD sensitive, especially the RF switch and the power amplifier. To avoid damage by electrostatic discharge, the following installation procedure is recommended from PCEngines:
-    >
-    > 1. Touch your hands and the bag containing the radio card to a ground point on the router board (for example one of the mounting holes). This will equalize the potential of radio card and router board.
-    > 2. Install the radio card in the miniPCI express socket.
-    > 3. Install the pigtail cable in the cut-out of the enclosure. This will ground the pigtail to the enclosure.
-    > 4. Touch the I-PEX connector of the pigtail to the mounting hole (discharge), then plug onto the radio card (this is where the pre-requisite patience comes in. I found this very finicky and spent perhaps 15 mins just getting those bastards in!)
+   > NOTE: Wireless radio cards are ESD sensitive, especially the RF switch and the power amplifier. To avoid damage by electrostatic discharge, the following installation procedure is recommended from PCEngines:
+   >
+   > 1. Touch your hands and the bag containing the radio card to a ground point on the router board (for example one of the mounting holes). This will equalize the potential of radio card and router board.
+   > 2. Install the radio card in the miniPCI express socket.
+   > 3. Install the pigtail cable in the cut-out of the enclosure. This will ground the pigtail to the enclosure.
+   > 4. Touch the I-PEX connector of the pigtail to the mounting hole (discharge), then plug onto the radio card (this is where the pre-requisite patience comes in. I found this very finicky and spent perhaps 15 mins just getting those bastards in!)
 
 5. Attach the antennae, making sure the washer bolt is tight.
 6. Finish screwing the enclosure and plug in the DB9 cable.
-8. Plug the DC cable in first before power outlet to avoid arcing.
+7. Plug the DC cable in first before power outlet to avoid arcing.
 
 ## Running
 
@@ -105,7 +106,7 @@ Serial Settings: 115200 baud rate, 8N1 (8 data bits, no parity, 1 stop bit). See
 
 The [PCEngines usbcom1a](http://www.pcengines.ch/usbcom1a.htm) uses the Silicon Labs CP2104 controller for which you can grab the driver [here](https://www.silabs.com/products/mcu/pages/usbtouartbridgevcpdrivers.aspx) (Mac/Linux/Windows)
 
-> 2018 update: to get this driver working on Sierra I had to install the legacy version of v5 *twice*. The double install gets the devices created and kernel driver loaded. No response from SiLabs on a fix at the time of writing this.
+> 2018 update: to get this driver working on Sierra I had to install the legacy version of v5 _twice_. The double install gets the devices created and kernel driver loaded. No response from SiLabs on a fix at the time of writing this.
 
 ```bash
 # Use a terminal multiplexer like `screen`
@@ -125,7 +126,7 @@ First and foremost, you should probably run a Memtest.
 1. Power cycle the router.
 2. Quickly fire in an F10 (remember fn key if Macbook) before the boot sequence gets too far.
 
-    > NOTE: This is a good time to make sure your SATA/PCI slots are seated and registered. They show up in the F10 menu.
+   > NOTE: This is a good time to make sure your SATA/PCI slots are seated and registered. They show up in the F10 menu.
 
 3. Select: Payload [memtest]
 
@@ -133,7 +134,7 @@ First and foremost, you should probably run a Memtest.
 
 4. ~2 hours later I had completed one pass which was good enough for me.
 
-    > NOTE: The apu2c4's AMD GX-412TC has a max temp rating of 90C. Mine hit a max of 69C during this test in a 30C ambient temperature (Australian summer)
+   > NOTE: The apu2c4's AMD GX-412TC has a max temp rating of 90C. Mine hit a max of 69C during this test in a 30C ambient temperature (Australian summer)
 
 ## BIOS Update
 
@@ -145,41 +146,42 @@ If the BIOS version you have (as noted above) is earlier than that which is avai
 
 This step involves creating a bootable USB containing [PCEngine's TinyCoreLinux](http://pcengines.ch/howto.htm#TinyCoreLinux) and the latest [APU2 ROM](http://pcengines.ch/howto.htm#bios). At the time of writing this, the following versions and instructions applied to macOS:
 
-| File | Link | Digest
- ----- | ---- | ------
-| PCEngines TinyCore Linux | http://pcengines.ch/file/apu2-tinycore6.4.img.gz | 48b8e0f21792648889aa99bf8156fed7
-| PCEngines apu2 ROM | http://www.pcengines.ch/file/apu2_160311.zip | 780a8ffaa034e013fef7126f3f986646
+| File                     | Link                                             | Digest                           |
+| ------------------------ | ------------------------------------------------ | -------------------------------- |
+| PCEngines TinyCore Linux | http://pcengines.ch/file/apu2-tinycore6.4.img.gz | 48b8e0f21792648889aa99bf8156fed7 |
+| PCEngines apu2 ROM       | http://www.pcengines.ch/file/apu2_160311.zip     | 780a8ffaa034e013fef7126f3f986646 |
 
 1. Grab and verify the distributions:
 
-    ```bash
-    # Download
-    curl -O http://pcengines.ch/file/apu2-tinycore6.4.img.gz
-    curl -O http://www.pcengines.ch/file/apu2_160311.zip
+   ```bash
+   # Download
+   curl -O http://pcengines.ch/file/apu2-tinycore6.4.img.gz
+   curl -O http://www.pcengines.ch/file/apu2_160311.zip
 
-    # Uncompress
-    gunzip apu2-tinycore6.4.img.gz
-    unzip apu2_160311.zip
+   # Uncompress
+   gunzip apu2-tinycore6.4.img.gz
+   unzip apu2_160311.zip
 
-    # Verify
-    md5 apu2-tinycore6.4.img # 48b8e0f21792648889aa99bf8156fed7
-    md5 apu2_160311.rom # 780a8ffaa034e013fef7126f3f986646
-    ```
+   # Verify
+   md5 apu2-tinycore6.4.img # 48b8e0f21792648889aa99bf8156fed7
+   md5 apu2_160311.rom # 780a8ffaa034e013fef7126f3f986646
+   ```
 
 2. Add the ROM to the disk image. The easiest way I could find was simply to mount the IMG and drag the ROM into it, both using Finder.
 3. Unmount both the IMG file and the USB
-4. Write the IMG to the *raw* USB device. In my case this was `disk2`. Double check with `diskutil list`.
-    ```bash
-    sudo dd if=apu2-tinycore6.4.img of=/dev/rdisk2 bs=1m
-    ```
+4. Write the IMG to the _raw_ USB device. In my case this was `disk2`. Double check with `diskutil list`.
+   ```bash
+   sudo dd if=apu2-tinycore6.4.img of=/dev/rdisk2 bs=1m
+   ```
 
 #### Flash the BIOS
+
 1. With the USB in a slot, power cycle the router.
 2. Either fire in an F10 again, or wait and the boot order should kick in and launch TinyCore Linux from the USB.
 3. This should land you in a rootshell with `/media/SYSLINUX` the mounted USB. Proceed to flash the ROM:
-    ```bash
-    flashrom -p internal -w /media/SYSLINUX/apu2_160311.rom
-    ```
+   ```bash
+   flashrom -p internal -w /media/SYSLINUX/apu2_160311.rom
+   ```
 4. Reboot after you see the final `Verifying flash... VERIFIED`.
 
 ## OpenBSD
@@ -197,46 +199,52 @@ However! `11n` support is being [actively worked on](https://marc.info/?l=openbs
 Anyway, choose `-STABLE` or `-CURRENT` (or perhaps 6.1+) based on your WiFi access point needs and continue.
 
 #### Install
+
 1. You will want to grab the latest OpenBSD filesystem image and verify its SHA256 hash:
-    > NOTE: Use a [mirror](https://www.openbsd.org/ftp.html) local to you.
 
-    ```bash
-    # STABLE
-    curl -O http://ftp.openbsd.org/pub/OpenBSD/6.0/amd64/install60.fs
-    shasum -a 256 install60.fs # Matches the install60.fs line item @ https://ftp.openbsd.org/pub/OpenBSD/6.0/amd64/SHA256
+   > NOTE: Use a [mirror](https://www.openbsd.org/ftp.html) local to you.
 
-    # CURRENT
-    curl -O https://ftp.openbsd.org/pub/OpenBSD/snapshots/amd64/install60.fs
-    shasum -a 256 install60.fs # Matches the install60.fs line item @ https://ftp.openbsd.org/pub/OpenBSD/snapshots/amd64/SHA256
-    ```
+   ```bash
+   # STABLE
+   curl -O http://ftp.openbsd.org/pub/OpenBSD/6.0/amd64/install60.fs
+   shasum -a 256 install60.fs # Matches the install60.fs line item @ https://ftp.openbsd.org/pub/OpenBSD/6.0/amd64/SHA256
+
+   # CURRENT
+   curl -O https://ftp.openbsd.org/pub/OpenBSD/snapshots/amd64/install60.fs
+   shasum -a 256 install60.fs # Matches the install60.fs line item @ https://ftp.openbsd.org/pub/OpenBSD/snapshots/amd64/SHA256
+   ```
 
 2. Stick the flash drive back into the Macbook, unmount it and write the OpenBSD filesystem to the drive:
-    ```bash
-    # Assuming `disk2` as before (again, confirm with `diskutil list`)
-    diskutil unmountDisk /dev/disk2
 
-    # Write install60.fs to the flash drive
-    sudo dd if=install60.fs of=/dev/rdisk2 bs=1m
+   ```bash
+   # Assuming `disk2` as before (again, confirm with `diskutil list`)
+   diskutil unmountDisk /dev/disk2
 
-    # macOS mounted it again for me after this, so...
-    diskutil unmountDisk /dev/disk2
-    ```
+   # Write install60.fs to the flash drive
+   sudo dd if=install60.fs of=/dev/rdisk2 bs=1m
+
+   # macOS mounted it again for me after this, so...
+   diskutil unmountDisk /dev/disk2
+   ```
+
 3. Plug the flash drive into the router and turn it on. Assuming the boot sequence is the same as mine this will land you at the `boot>` prompt. If not, launch the USB from the BIOS menu or edit the BIOS settings and change the order so that USB slots are first up.
 4. Pay attention to the serial console [FAQ](https://www.openbsd.org/faq/faq7.html). I found I had to tell the boot process to use the serial port as a console and change the baud rate. Though I found I didn't have to persist this in [boot.conf(5)](http://man.openbsd.org/amd64/boot.conf) as the FAQ said; it seemed to get done for me.
-    ```bash
-    boot> set tty com0
-    boot> stty com0 115200
-    ```
+
+   ```bash
+   boot> set tty com0
+   boot> stty com0 115200
+   ```
 
 5. Go ahead with an OpenBSD install.
-    ```bash
-    Welcome to the OpenBSD/amd64 6.0 installation program.
-    (I)nstall, (U)pgrade, (A)utoinstall or (S)hell?
-    ```
 
-    > NOTE: I won't detail install steps here; the [documentation](https://www.openbsd.org/faq/faq4.html#Install) has a sterling reputation for a reason.
-    >
-    > That said, you'll not have much need for the X11 and game install sets so you may as well de-select those.
+   ```bash
+   Welcome to the OpenBSD/amd64 6.0 installation program.
+   (I)nstall, (U)pgrade, (A)utoinstall or (S)hell?
+   ```
+
+   > NOTE: I won't detail install steps here; the [documentation](https://www.openbsd.org/faq/faq4.html#Install) has a sterling reputation for a reason.
+   >
+   > That said, you'll not have much need for the X11 and game install sets so you may as well de-select those.
 
 ## Immutability
 
@@ -246,9 +254,10 @@ It would be poor form to not [practice what I preach](https://martinfowler.com/b
 
 Nothing special or highly refined in terms of Ansible here.
 
-The `settings.yml` contains all variables used in the jinja2 templates and `./go.sh <ip>` orchestrates a few Ansible runs against the new OpenBSD install. 
+The `settings.yml` contains all variables used in the jinja2 templates and `./go.sh <ip>` orchestrates a few Ansible runs against the new OpenBSD install.
 
 Firstly to bootstrap Python for Ansible (using password auth via paramiko):
+
 ```bash
 ansible -m raw -c paramiko -u "${USER}" -k \
     -b --become-method=su --ask-su-pass -a \
@@ -257,11 +266,13 @@ ansible -m raw -c paramiko -u "${USER}" -k \
 ```
 
 Then a 1st provisioning pass enables [`doas(1)`](http://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/doas.1) and disables password auth in lieu of successfully configuring public keys:
+
 ```bash
 ansible-playbook bootstrap.yml -kKi "$1,"
 ```
 
 The main event provisions the rest of the configuration using key based logins and [`doas(1)`](http://man.openbsd.org/cgi-bin/man.cgi/OpenBSD-current/man1/doas.1) for superuser access:
+
 ```bash
 ansible-playbook provision.yml -i "$1,"
 ```
@@ -269,17 +280,21 @@ ansible-playbook provision.yml -i "$1,"
 ## Noteworthy Configurations
 
 #### Mail
+
 OpenSMTPD is configured to externally relay using Google's SMTP servers. To do the same, you will need to enable ["less secure apps"](https://www.google.com/settings/security/lesssecureapps) on the Gmail account. Obviously use a burner account exclusively for this purpose rather than your personal Google account.
 
 With SMTP relay set up, the last steps involving mail are to configure a mail alias for `root` to be the personal account in `settings.yml`.
 
 #### Sensors
+
 [sensorsd(8)](http://man.openbsd.org/OpenBSD-current/man8/sensorsd.8) is enabled to monitor the CPU temperature. I chose the arbitrary value of 70C. If the CPU temp exceeds this value then a mail will be sent to root (and thus my private email account as above).
 
 #### Disk
+
 [fstab(5)](http://man.openbsd.org/fstab) is updated to mount the root filesystem with no access time logging and soft updates for performance reasons.
 
 #### DNS-over-TLS
+
 Unbound DNS is enabled and configured to be a recursive caching DNS with upstream DNS-over-TLS nameservers (so my DNS requests are encrypted in transit). At the other end I'm using [Cloudflare](https://blog.cloudflare.com/announcing-1111). From where I am, Cloudflare is faster than Google, and state they'll never use the data and wipe logs within 24h, with KPMG on retainer performing audits keeping them to their word.
 
 Fixed LAN clients declared in `settings.yml` are added as local-data resolutions, including the server hostname itself. The are also set up for reverse DNS.
@@ -287,14 +302,17 @@ Fixed LAN clients declared in `settings.yml` are added as local-data resolutions
 Finally a [blacklist of domains](https://v.firebog.net/hosts/lists.php) is scraped, parsed and loaded, with each configured to resolve localhost i.e. null routed. The DB is updated monthly from upstream using a cron.
 
 #### Network Time
+
 NTP is enabled and pointed at a pool as per `settings.yml` and [`dhcpd(8)`](http://man.openbsd.org/dhcpd.8) is configured to advertise this to clients.
 
 #### Networking
+
 The `apu2c4` board has 3 NICs. The first of which, the `em0` interface, is used in conjunction with a `pppoe0` interface to make a connection to my ISP. Username/password configured in `settings.yml`.
 
 The remaining NIC interfaces (`em1` and `em2`) are plumbed along with `athn0`, the wireless card, into a link aggregate interface which binds on the configured ip/netmask/broadcast in `settings.yml` (as the `vether0` interface). This completes the egress and LAN networking.
 
 #### Firewalling
+
 The [pf.conf(5)](http://man.openbsd.org/pf.conf.5) jinja2 template is individually annotated with comments. Below are a few highlights:
 
 - A table of bogus private addresses ([bogons](https://en.wikipedia.org/wiki/Bogon_filtering)) is used in rules on the egress interface (in `pf` speak, this is the current default route). Anything coming in on `egress` destined for, or out on `egress` destined to one of these addresses will be dropped `quick`.
@@ -309,6 +327,7 @@ The [pf.conf(5)](http://man.openbsd.org/pf.conf.5) jinja2 template is individual
 - [`syslogd(8)`](http://man.openbsd.org/syslogd) is used to translate firewall logs into ASCII format, and a cron and [`pf_log_rotate.sh`](./files/pf_log_rotate.sh) is used for rotation.
 
 #### Bufferbloat
+
 Also found in the [pf.conf(5)](http://man.openbsd.org/pf.conf.5) is a fix for [Bufferbloat](https://www.bufferbloat.net/projects/bloat/wiki/Introduction/). The `uplink_` variables should be set to about [90-95%](https://www.reddit.com/r/openbsd/comments/75ps6h/fqcodel_and_pf/doca4uv) of your uplink up/down in megabytes.
 
 Use DSLreports.com's SpeedTest for Bufferbloat analysis:
@@ -316,6 +335,7 @@ Use DSLreports.com's SpeedTest for Bufferbloat analysis:
 ![Bufferbloat](./images/bufferbloat.png "Bufferbloat")
 
 #### WireGuard
+
 The [WireGuard](https://www.wireguard.com)-go implementation is installed and configured via the provisioning process. It's possible to change things like port, CIDR blocks, peers etc. through `settings.yml`.
 
 I'm mostly remotely accessing my home network with macOS. I'd recommend making use of [pass](https://www.passwordstore.org/) by the same author as WireGuard for encrypting private keys. This is achieved simply by replacing the `PrivateKey` line under `[Interface]` in the WireGuard config with:
@@ -327,6 +347,7 @@ PostUp = wg set %i private-key <(su user -c "export PASSWORD_STORE_DIR=/path/to/
 In terms of workflow on macOS, [here's](https://techcrunch.com/2018/07/28/how-i-made-my-own-wireguard-vpn-server/) how you'd use AppleScript and the WireGuard CLI tools.
 
 #### Prometheus
+
 Prometheus' `node_exporter` is installed and configured as a system daemon as part of the Ansible provision run.
 
 I have Prometheus itself running, along with Alertmanager and Grafana, on another server within my network. This is the [dashboard](./OpenBSDNodes.json) I'm using. It looks something like this:
