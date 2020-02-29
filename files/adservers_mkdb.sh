@@ -14,6 +14,7 @@ unset LANG && \
     for site in $(${CURL} --fail -s 'https://v.firebog.net/hosts/lists.php?type=tick'); do
         ${CURL} --fail -sL "${site}" || :;
     done | \
+    tr -d '\r' | \
     sed -e 's/^127.0.0.1\s*//g; s/^0.0.0.0\s*//g; s/^0\s*//g; s/localhost//g' \
     -e 's/\s*#.*$//' -e '/^\s*$/d' -e $'s/\r//' | \
     sort | \
