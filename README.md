@@ -1,5 +1,7 @@
 # homebrew-openbsd-pcengines-router
 
+![server](./images/server.png "Server")
+
 - [About](#about)
 - [Purchases](#purchases)
 - [Assembly](#assembly)
@@ -356,8 +358,8 @@ I have Prometheus itself running, along with Alertmanager and Grafana, on anothe
 
 ![Grafana 2](./images/grafana2.png "Grafana 2")
 
-
 #### TODO
+
 - IRC bouncer
 - Port knocking for LAN services
 - Set certain partitions as read-only
